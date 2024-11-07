@@ -16,7 +16,7 @@ class Arvore {
           switch (i) {
               case 0: return nome_c;
               case 1: return nome_p;
-              default: return "";
+              default: return string("");
           }
       }
 };
