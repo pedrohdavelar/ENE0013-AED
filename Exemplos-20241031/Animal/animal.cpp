@@ -47,9 +47,11 @@ class peixe : public animal
 
 int main()
 {
+  animal cachorro;
   ave passarinho;
   peixe sardinha;
 
+  cachorro.mover();
   passarinho.mover();
   sardinha.mover();
 
