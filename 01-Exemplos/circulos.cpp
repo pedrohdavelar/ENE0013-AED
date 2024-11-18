@@ -32,6 +32,4 @@ int main() {
 
   CirculoBordado cir;
   cout << cir.toString() << endl;
-
-  cout << cir.Circulo::toString() << endl;
 }
