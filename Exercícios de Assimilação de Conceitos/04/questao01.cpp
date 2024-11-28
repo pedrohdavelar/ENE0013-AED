@@ -142,16 +142,17 @@ int linkedList::max(){
 }
 
 double linkedList::avg(){
-    if (head==nullptr){return 0.0;}
-    
+    if (isEmpty()){return 0.0;}
+    else{
     double soma = 0.0;
-    double n = 0.0;
+    int n = 0;
     for (Node* i = head; i !=nullptr; i = i->next){
         soma += i->data;
         n++;
     }
 
     return (soma/n);
+    }
 }
 
 
