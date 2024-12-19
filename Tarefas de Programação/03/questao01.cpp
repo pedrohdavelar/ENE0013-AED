@@ -60,10 +60,12 @@ class Pilha {
 
         int tamanhoPilha(){return (topo + 1);}         //Como o indice começa em zero, a qtde sera topo + 1
 
+        int capacidadePilha(){return capacidade;}      //quantos elementos a pilha pode armazenar
+        
         void imprimePilha(std::string com_espaco = "n"){
             if (estaVazia()){std::cout << "Pilha Vazia";}
             else{
-                for (size_t i = topo; i >=0; i--){      //Como é uma pilha, a iteração deve ser em ordem decrescente
+                for (int i = topo; i >=0; i--){      //Como é uma pilha, a iteração deve ser em ordem decrescente
                     std::cout << dados[i];
                     if(com_espaco == "s" || com_espaco == "S"){std::cout << " ";} //para facilitar o reuso deste código
                 }                                                                 //ja que para o exercicio será necessario
@@ -73,50 +75,73 @@ class Pilha {
 };
 
 
-
-
 int main (){
 
-    std::string n1,n2;
-    std::cin >> n1,n2;
-    int d1 = 0, d2 = 0, vai1 = 0, r = 0, tamanho_resposta = 0;
-    d1 = d2 = vai1 = r = 0;
-
+    std::string numero1,numero2,pivot;                    //string para os numeros 1 e 2, pivot para receber cada caractere
+    std::cin >> numero1 >> numero2;                       //le os dois numeros/strings
     
-    
-    Pilha<int> p1(n1.size());
-    Pilha<int> p2(n2.size());
-    
-    if (!n1.empty()){
-        for (size_t i = n1.size(); i > 0; i--){
-            d1 = std::stoi(n1.back());
-            n1.pop_back();
-            p1.insereElemento(d1);
+    int digito1 = 0, tamanho1 = 0;                        //digito dos numeros 1 e 2, tamanho das pilhas 1 e 2 
+    int digito2 = 0, tamanho2 = 0;
+    int digito_resposta = 0, tamanho_resposta = 0;        //digito da resposta, tamanho da resposta
+    int vai_um = 0;                                       //vai um
+  
+    tamanho1 = numero1.size();
+    Pilha<int> pilha1(tamanho1);
+    tamanho2 = numero2.size();
+    Pilha<int> pilha2(tamanho2);
+ 
+    if (!numero1.empty()){                                   //Converte os digitos da string em int e 
+        for (int i = numero1.size(); i > 0; i--){            //insere na pilha
+            pivot = numero1.front();                         //jogando n1.back() direto na std::stoi() deu erro, então criei essa
+            digito1 = std::stoi(pivot);                      //string "pivot" para receber o digito e fazer a conversão para int
+            numero1.erase(0,1);
+            pilha1.insereElemento(digito1);
         } 
     }
 
-    if (!n2.empty()){
-        for (size_t i = n2.size(); i > 0; i--){
-            d2 = std::stoi(n2.back());
-            n2.pop_back();
-            p2.insereElemento(d2);
+    if (!numero2.empty()){
+        for (int i = numero2.size(); i > 0; i--){
+            pivot = numero2.front();
+            digito2 = std::stoi(pivot);
+            numero2.erase(0,1);
+            pilha2.insereElemento(digito2);
         } 
     }
     
-    if(n1.size()>n2.size()){tamanho_resposta = (n1.size()+1);}
-    else{tamanho_resposta = (n2.size()+1);}
-    Pilha<size_t> resposta(tamanho_resposta);
+    if(tamanho1 > tamanho2){                           //para evitar operaçoes de redimensionamento desnecessárias, 
+        tamanho_resposta = tamanho1;                   //montamos a pilha para a resposta com o tamanho do maior 
+    }else{                                             //numero inserido.
+        tamanho_resposta = tamanho2;
+    }
 
-    while(!p1.estaVazia() && p2.estaVazia()){
-        d1 = d2 = vai1 = r = 0;                                        //inicialização das variaveis a cada iteração
+    Pilha<size_t> pilha_resposta(tamanho_resposta);
 
-        if (!p1.estaVazia){                                            //extrai o digito de p1
+    while(tamanho_resposta > 0){
+        digito1 = digito2 = digito_resposta = 0;                             //inicialização das variaveis a cada iteração
 
+        if (!pilha1.estaVazia()){                                            //extrai o digito de p1
+            digito1 = pilha1.observaTopo();
+            pilha1.removeElemento();
         }
 
-    } 
+        if (!pilha2.estaVazia()){                                            //extrai o digito de p2
+            digito2 = pilha2.observaTopo();
+            pilha2.removeElemento();
+        }
 
+        digito_resposta = digito1 + digito2 + vai_um;                  //soma os digitos de cada uma das pilhas e o vai um da ultima soma
+        if (digito_resposta >= 10){                                    //se r for maior ou igual a dez então pegamos o resto de sua divisão por 10
+            digito_resposta %= 10;                                     //para extrair o ultimo digito e atribuimos 1 ao vai 1; senão então zeramos
+            vai_um = 1;                                                //o vai 1 para a proxima iteração
+        } else {vai_um = 0;}                     
+        
+        pilha_resposta.insereElemento(digito_resposta);          //por fim inserimos o digito obtido na resposta;
+        tamanho_resposta--;
+    }
+
+    if (vai_um == 1){pilha_resposta.insereElemento(vai_um);}  //se ao terminar de iterar as duas pilhas sobrar um vai 1, então devemos adicionar 
+                                                              //este ultimo dígito a resposta
+    pilha_resposta.imprimePilha();
+    std::cout << std::endl;
     return 0;
-
-
 }
