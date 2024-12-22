@@ -37,8 +37,8 @@ class Pilha {
             for (size_t i; i<topo; i++){               //iteramos a pilha atual repassando os dados
                 novos_dados[i] = dados[i];             //para a nova area de memoria
             }
-            delete[] dados;                            //desalocamos a antiga pilha
-            dados = novos_dados;                       //dados ira apontar para a nova pilha
+            dados = novos_dados;                            //desalocamos a antiga pilha
+            delete[] dados;                      //dados ira apontar para a nova pilha
             capacidade = nova_capacidade;              //e a capacidade agora é dobrada
         }
 
@@ -114,7 +114,9 @@ int main (){
         tamanho_resposta = tamanho2;
     }
 
-    Pilha<size_t> pilha_resposta(tamanho_resposta);
+    tamanho_resposta++;
+    
+    Pilha<int> pilha_resposta(tamanho_resposta);
 
     while(tamanho_resposta > 0){
         digito1 = digito2 = digito_resposta = 0;                             //inicialização das variaveis a cada iteração
@@ -128,14 +130,19 @@ int main (){
             digito2 = pilha2.observaTopo();
             pilha2.removeElemento();
         }
-
+        //std::cout << digito1 << " + " << digito2 << " + " << vai_um << std::endl;
         digito_resposta = digito1 + digito2 + vai_um;                  //soma os digitos de cada uma das pilhas e o vai um da ultima soma
+        //std::cout << digito_resposta << " " << (digito_resposta%10) << std::endl;
+        vai_um = 0;
         if (digito_resposta >= 10){                                    //se r for maior ou igual a dez então pegamos o resto de sua divisão por 10
             digito_resposta %= 10;                                     //para extrair o ultimo digito e atribuimos 1 ao vai 1; senão então zeramos
             vai_um = 1;                                                //o vai 1 para a proxima iteração
-        } else {vai_um = 0;}                     
+        }                   
         
         pilha_resposta.insereElemento(digito_resposta);          //por fim inserimos o digito obtido na resposta;
+        //std::cout << "Resposta no momento: ";
+        //pilha_resposta.imprimePilha("s");
+        //std::cout << std::endl;
         tamanho_resposta--;
     }
 
