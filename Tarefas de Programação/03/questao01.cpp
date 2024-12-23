@@ -34,12 +34,12 @@ class Pilha {
             int nova_capacidade = capacidade * 2;      //Dobramos o tamanho da pilha
             T* novos_dados = new T[nova_capacidade];   //Alocamos a memoria para os dados
 
-            for (size_t i; i<topo; i++){               //iteramos a pilha atual repassando os dados
+            for (int i = 0; i<=topo; i++){               //iteramos a pilha atual repassando os dados
                 novos_dados[i] = dados[i];             //para a nova area de memoria
             }
-            dados = novos_dados;                            //desalocamos a antiga pilha
-            delete[] dados;                      //dados ira apontar para a nova pilha
-            capacidade = nova_capacidade;              //e a capacidade agora é dobrada
+            delete[] dados;                           //desalocamos a antiga pilha
+            dados = novos_dados;                      //dados ira apontar para a nova pilha
+            capacidade = nova_capacidade;             //e a capacidade agora é dobrada
         }
 
         void insereElemento (T elemento){              //vulgo push
@@ -112,38 +112,33 @@ int main (){
         tamanho_resposta = tamanho1;                   //montamos a pilha para a resposta com o tamanho do maior 
     }else{                                             //numero inserido.
         tamanho_resposta = tamanho2;
-    }
-
-    tamanho_resposta++;
+    }                                                  //poderiamos fazer um incremento no tamanho da resposta para garantir não ser necessário
+                                                       //fazer um redimensionamento no caso de um último vai um; no entanto deixei assim para, 
+    //tamanho_resposta++;                              //por outro lado, assegurar que a função de redimensionamento da pilha funciona
+    
     
     Pilha<int> pilha_resposta(tamanho_resposta);
 
     while(tamanho_resposta > 0){
-        digito1 = digito2 = digito_resposta = 0;                             //inicialização das variaveis a cada iteração
-
-        if (!pilha1.estaVazia()){                                            //extrai o digito de p1
+        digito1 = digito2 = digito_resposta = 0;       //inicialização das variaveis a cada iteração exceto o vai um que é inicializado após a soma
+        if (!pilha1.estaVazia()){                      //extrai o digito de p1
             digito1 = pilha1.observaTopo();
             pilha1.removeElemento();
         }
 
-        if (!pilha2.estaVazia()){                                            //extrai o digito de p2
+        if (!pilha2.estaVazia()){                      //extrai o digito de p2
             digito2 = pilha2.observaTopo();
             pilha2.removeElemento();
         }
-        //std::cout << digito1 << " + " << digito2 << " + " << vai_um << std::endl;
-        digito_resposta = digito1 + digito2 + vai_um;                  //soma os digitos de cada uma das pilhas e o vai um da ultima soma
-        //std::cout << digito_resposta << " " << (digito_resposta%10) << std::endl;
+        digito_resposta = digito1 + digito2 + vai_um;       //soma os digitos de cada uma das pilhas e o vai um da ultima soma
         vai_um = 0;
-        if (digito_resposta >= 10){                                    //se r for maior ou igual a dez então pegamos o resto de sua divisão por 10
-            digito_resposta %= 10;                                     //para extrair o ultimo digito e atribuimos 1 ao vai 1; senão então zeramos
-            vai_um = 1;                                                //o vai 1 para a proxima iteração
+        if (digito_resposta >= 10){                         //se r for maior ou igual a dez então pegamos o resto de sua divisão por 10
+            digito_resposta %= 10;                          //para extrair o ultimo digito e atribuimos 1 ao vai 1
+            vai_um = 1;                                     
         }                   
         
         pilha_resposta.insereElemento(digito_resposta);          //por fim inserimos o digito obtido na resposta;
-        //std::cout << "Resposta no momento: ";
-        //pilha_resposta.imprimePilha("s");
-        //std::cout << std::endl;
-        tamanho_resposta--;
+        tamanho_resposta--;                                      //A qtde de iterações necessárias é a qtde de dígitos do maior número
     }
 
     if (vai_um == 1){pilha_resposta.insereElemento(vai_um);}  //se ao terminar de iterar as duas pilhas sobrar um vai 1, então devemos adicionar 
