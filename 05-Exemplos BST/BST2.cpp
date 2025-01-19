@@ -1,6 +1,7 @@
 #include <queue>
 #include <stack>
 #include <iostream>
+#include <string>
 
 
 template<class T>
@@ -198,9 +199,9 @@ template<class T>
 void BST<T>::deleteByMerging(BSTNode<T>*& node) {
   BSTNode<T> *tmp = node;
   if (node != 0) {
-    if (node->right == 0)           // node has no right child: its left
+    if (node->right == 0){           // node has no right child: its left
       node = node->left;     // child (if any) is attached to its parent;
-    else
+    } else
       if (node->left == 0)   // node has no left child: its right
         node = node->right;    // child is attached to its parent;
       else {                      // be ready for merging subtrees;
@@ -213,7 +214,7 @@ void BST<T>::deleteByMerging(BSTNode<T>*& node) {
         tmp = node;             // 4.
         node = node->left;     // 5.
       }
-      delete tmp;                 // 6.
+    delete tmp;                 // 6.
    }
 }
 
