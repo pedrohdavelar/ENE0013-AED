@@ -24,12 +24,12 @@ int main(int argc, char const *argv[]) {
 
   g.printAdjacencyList();
 
-  /*cout << "Informe o vertice de origem: ";
+  cout << "Informe o vertice de origem: ";
   cin >> fonte;
   cout << "Percurso em profundidade:\n";
   g.depthFirstSearch(fonte);
   cout << "Percurso em largura:\n";
-  g.breadthFirstSearch(fonte);*/
+  g.breadthFirstSearch(fonte);
 
   return 0;
 }
