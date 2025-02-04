@@ -10,14 +10,11 @@ class nave{
     float consumoPorHora;
     int distanciaMaxima;
 
-    //construtor
-    nave(std::string nome, int qtdeTripulantes, float capacidadeCarga, float consumoPorHora, int distanciaMaxima){
-        this->nome = nome;
-        this->qtdeTripulantes = qtdeTripulantes;
-        this->capacidadeCarga = capacidadeCarga;
-        this->consumoPorHora = consumoPorHora;
-        this->distanciaMaxima = distanciaMaxima;
-    }
+    //construtor padrão
+    nave() : nome(""), qtdeTripulantes(0), capacidadeCarga(0.0), consumoPorHora(0.0), distanciaMaxima(0) {}
+    //construtor parametrizado
+    nave(std::string nome, int qtdeTripulantes, float capacidadeCarga, float consumoPorHora, int distanciaMaxima)
+        : nome(nome), qtdeTripulantes(qtdeTripulantes), capacidadeCarga(capacidadeCarga), consumoPorHora(consumoPorHora), distanciaMaxima(distanciaMaxima) {}
 
     void imprimeNave(){
         std::cout << nome << " " << qtdeTripulantes << " " << capacidadeCarga << " " << consumoPorHora << " " << distanciaMaxima << std::endl;
@@ -83,7 +80,7 @@ void imprimeFrota(){
 void heapify(std::vector<nave>& frota, int p){
     int n = frota.size();
     int L, R, maior;
-    nave swap;
+    nave swap ;
     L = (2*p) + 1; //eventual posicao do filho a esquerda 
     R = (2*p) + 2; //eventual posicao do filho a direita
 
@@ -118,12 +115,31 @@ void heapsort(std::vector<nave>& frota){
 }
 
 int main (){
+    int casosTeste = 0, totalNaves = 0, selNaves = 0;
+
+    while (casosTeste <= 0){
+        std::cout << "Qtde casos teste: ";
+        std::cin  >> casosTeste;
+    }
+    
+    while (totalNaves <= 0){
+        std::cout << "Qtde naves: ";
+        std::cin >> totalNaves;
+    }
+
+    while (selNaves <= 0 || selNaves > totalNaves){
+        std::cout << "Qtde Naves selecionadas: ";
+        std::cin >> selNaves;
+    } 
     nave input;
-    frota naves;
-    while(true){
+    std::cout << "Parametros de entrada: " << std::endl;
+    std::cout << "Nome (string), qtdeTripulantes (int), capacidadeCarga(float), consumoPorHora(float), distanciaMaxima(int)" << std::endl;
+    for(int i = 0; i < totalNaves; i++){
         std::cin >> input.nome >> input.qtdeTripulantes >> input.capacidadeCarga >> input.consumoPorHora >> input.distanciaMaxima;
+        if (input.nome == "-1"){break;}
         frota.push_back(input);
     }
     imprimeFrota();
+
     return 0;
 }
