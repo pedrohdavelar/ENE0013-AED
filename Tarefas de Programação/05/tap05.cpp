@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 
+
+//classe para guardar os atributos definidos no enunciado da  tarefa
 class nave{
     public:                   //atributos
     std::string nome;
@@ -19,7 +21,9 @@ class nave{
     void imprimeNave(){
         std::cout << nome << " " << qtdeTripulantes << " " << capacidadeCarga << " " << consumoPorHora << " " << distanciaMaxima << std::endl;
     }
-
+    void imprimeNome(){
+        std::cout << nome << std::endl;
+    }
 //vejo duas maneiras de resolver o problema. Como há várias regras para a ordenação, poderia fazer diversos sorts para ordenar tudo...
 //ou simplesmente fazer um overload do operador de comparação, embutindo todas as regras nesse overload, e aí simplesmente fazendo 
 //um único sort para ordenar a frota. Acho a segunda opção bem mais simples, além de permitir usar os diversos tipos de sort ensinados nas aulas.
@@ -32,7 +36,7 @@ class nave{
                 else if (consumoPorHora == n.consumoPorHora){
                     if (distanciaMaxima < n.distanciaMaxima){return true;} //prioridade #4 - distancia maxima
                     else if (distanciaMaxima == n.distanciaMaxima){
-                        if (nome < n.nome) {return true;} //prioridade #5 - nome crescente
+                        if (nome > n.nome) {return true;} //prioridade #5 - nome crescente
                     }
                 }
             }
@@ -48,7 +52,7 @@ class nave{
                 else if (consumoPorHora == n.consumoPorHora){
                     if (distanciaMaxima > n.distanciaMaxima){return true;} //prioridade #4 - distancia maxima
                     else if (distanciaMaxima == n.distanciaMaxima){
-                        if (nome > n.nome) {return true;} //prioridade #5 - nome decrescente
+                        if (nome < n.nome) {return true;} //prioridade #5 - nome decrescente
                     }
                 }
             }
@@ -66,80 +70,89 @@ class nave{
     } 
 };
 
+//frota poderia ser uma classe, mas como o tempo está corrido foi mais prático fazer um vector global.
 std::vector<nave> frota;
-
+//do mesmo jeito que essas funções poderiam ser métodos de uma classe frota, mas tá corrido...
+//imprimeFrota foi usado mais para testes
 void imprimeFrota(){
     for (int i = 0; i < frota.size(); i++){
         frota[i].imprimeNave();
     }
 }
 
-
-//Funções para a HEAPSEARCH feitas no EAC 10
-
-void heapify(std::vector<nave>& frota, int p){
-    int n = frota.size();
-    int L, R, maior;
-    nave swap ;
-    L = (2*p) + 1; //eventual posicao do filho a esquerda 
-    R = (2*p) + 2; //eventual posicao do filho a direita
-
-    if ((L < n) && (frota[L] > frota[p])){maior = L;}else{maior = p;} //verifica se L < n para evitar overflow do array
-    if ((R < n) && (frota[R] > frota[maior])){maior = R;}             //verifica se R < n para evitar overflow do array
-
-    if (maior != p){
-       swap=frota[p];
-       frota[p]=frota[maior];
-       frota[maior]=swap;
-       heapify(frota, maior);
-       }
-}
-
-void build_heap(std::vector<nave>& frota){
-    int n = frota.size();
-    for (int p = n/2;p >=0; p--){
-        heapify(frota, p);
-    }
-}
-
-void heapsort(std::vector<nave>& frota){
+//a ideia era usar o heapsearch do EAC 10, mas o tempo tá corrido. O bubblesort é mais simples. Seria mais legal também usar
+//Template, mas novamente, o tempo tá corrido....
+void bubbleSort(std::vector<nave>& frota){
     int n = frota.size();
     nave swap;
-    build_heap(frota);
-    for (int p = n-1; p >=1; p--){
-        swap = frota[p];
-        frota[p] = frota[0];
-        frota[0] = swap;
-        heapify(frota,0);
+    for (int i = 0; i < n-1; i++){
+        for (int j = 0; j < n-i-1; j++){
+            if (frota[j] < frota[j+1]){     //lógica invertida porque as naves de maior prioridade serão as escolhidas para as missões (maior prioridade -> maior índice)
+                swap = frota[j];
+                frota[j] = frota[j+1];
+                frota[j+1] = swap;
+            }
+        }
     }
 }
 
 int main (){
     int casosTeste = 0, totalNaves = 0, selNaves = 0;
-
-    while (casosTeste <= 0){
-        std::cout << "Qtde casos teste: ";
+    nave input; //objeto para receber as entradas e adicionar ao vector do objeto <nave> frota
+    
+    std::vector<std::string> textOutput; //como a saída deve ser impressa após a inserção de todos os dados, para facilitar a logica,
+    //durante a execução a cada missão salva a saída nesse vector e depois itero ele para imprimir tudo
+    
+    while (casosTeste <= 0){                  //a quantidade de casos de teste vai definir a qtde de iterações do loop principal. Cada iteração = 1 missão
+        //std::cout << "Qtde casos teste: ";
         std::cin  >> casosTeste;
     }
     
-    while (totalNaves <= 0){
-        std::cout << "Qtde naves: ";
-        std::cin >> totalNaves;
-    }
+    for (int numeroMissao = 1; numeroMissao <= casosTeste; numeroMissao++){ 
 
-    while (selNaves <= 0 || selNaves > totalNaves){
-        std::cout << "Qtde Naves selecionadas: ";
-        std::cin >> selNaves;
-    } 
-    nave input;
-    std::cout << "Parametros de entrada: " << std::endl;
-    std::cout << "Nome (string), qtdeTripulantes (int), capacidadeCarga(float), consumoPorHora(float), distanciaMaxima(int)" << std::endl;
-    for(int i = 0; i < totalNaves; i++){
-        std::cin >> input.nome >> input.qtdeTripulantes >> input.capacidadeCarga >> input.consumoPorHora >> input.distanciaMaxima;
-        if (input.nome == "-1"){break;}
-        frota.push_back(input);
-    }
-    imprimeFrota();
+        //limpa a frota, a qtde de naves e a qtde selecionada de naves a cada iteração
+        frota.clear();
+        totalNaves = 0;
+        selNaves = 0;
+        //std::cout << "Missao " << numeroMissao << std::endl;
+        //std::cout << "totalNaves: " << totalNaves << " selNaves: " << selNaves << std::endl;
+        while (totalNaves <= 0){        //garante que o numero de naves seja um numero positivo
+            //std::cout << "Qtde naves: ";
+            std::cin >> totalNaves;
+        }
 
+        while (selNaves <= 0 || selNaves > totalNaves){ //garante que o numero de naves selecionadas seja um numero positivo e menor que o total de naves
+            //std::cout << "Qtde Naves selecionadas: ";
+            std::cin >> selNaves;
+        } 
+        //leitura do numero de naves especificado. O programa não especifica um caso de erro então vou assumir que todas as entradas serão válidas
+        for (int i = 0; i < totalNaves; i++){   
+            //std::cout << "i: " << i << "/ totalNaves: : " << totalNaves << std::endl;
+            //std::cout << "Parametros de entrada: " << std::endl;
+            //std::cout << "Nome (string), qtdeTripulantes (int), capacidadeCarga(float), consumoPorHora(float), distanciaMaxima(int)" << std::endl;
+            std::cin >> input.nome >> input.qtdeTripulantes >> input.capacidadeCarga >> input.consumoPorHora >> input.distanciaMaxima;
+            frota.push_back(input);
+        }
+
+        //std::cout << "Frota pré sort: ";
+        //imprimeFrota(); std::cout << std::endl;
+        //ordenamento da frota via bubbleSort;
+        bubbleSort(frota);
+        //std::cout << "Frota pós sort: ";
+        //imprimeFrota(); std::cout << std::endl;
+        //imprimeFrota();
+        //saída formatada cfe exemplo
+        
+        //ao inves de imprimir para o console, cada linha é salva no vector textOutput. Dessa forma é possível atender a formatação 
+        //experada do enunciado.
+        textOutput.push_back("MISSAO " + std::to_string(numeroMissao));
+        for (int i = 0; i < selNaves; i++){
+            textOutput.push_back(std::to_string(i+1) + " " + frota[i].nome);
+        }
+    }
+    //apos processar todas as missões, iterar o vector textOutput para imprimir no console a saída
+    for (int i = 0; i < textOutput.size(); i++){
+        std::cout << textOutput[i] << std::endl;
+    }
     return 0;
 }
